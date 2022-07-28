@@ -2,7 +2,7 @@
 This script enables player created business cards. Comes with a warp to an interior butthis can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
-COMING SOON
+[Video](https://youtu.be/CSYWQ2pf2a4)
 # Config 🔧
 **JobIsRequired**: Set to *true* if you want to lock this behind a job. Default is*false*\
 **AllowedJob**: The job you want to be able to use it. Only needed if JobIsRequired is*true*\
