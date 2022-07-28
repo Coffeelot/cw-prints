@@ -110,11 +110,32 @@ RegisterNetEvent("cw-prints:client:tpOut", function()
     TriggerServerEvent("cw-prints:server:TPOutside")
 end)
 
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
+
 RegisterNetEvent("cw-prints:client:openInteraction", function()
+
     local dialog = exports['qb-input']:ShowInput({
         header = Config.Texts.cardMakerHeader,
         submitText = Config.Texts.cardMakerSubmit,
         inputs = {
+            {
+                text = "Type", -- text you want to be displayed as a place holder
+                name = "type", -- name of the input should be unique otherwise it might override
+                type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
+                options = Config.Items,
+                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+            },
             {
                 text = "Business name", -- text you want to be displayed as a place holder
                 name = "business", -- name of the input should be unique otherwise it might override
@@ -138,9 +159,9 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
             }
         },
     })
-
+    
     if dialog ~= nil then
-        local data = { dialog["business"], dialog["url"], dialog["amount"] }
+        local data = { dialog["business"], dialog["url"], dialog["amount"], dialog["type"] }
 
         TriggerServerEvent("cw-prints:server:createCard", data)
     else

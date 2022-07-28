@@ -5,7 +5,7 @@ local exitCoords = Config.Locations.shopExitCoords
 
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
-    local item = Config.Item
+    local item = data[4]
 
         local info = {}
         info.business = data[1]
@@ -16,9 +16,12 @@ local function createBusinessCard(source, data)
         TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 end
 
-QBCore.Functions.CreateUseableItem(Config.Item, function(source, Item)
-    TriggerClientEvent("cw-prints:client:businessCard", source, Item)
-end)
+for i, type in pairs(Config.Items) do
+    QBCore.Functions.CreateUseableItem(type.value, function(source, Item)
+        TriggerClientEvent("cw-prints:client:businessCard", source, Item)
+    end)
+end
+
 
 RegisterNetEvent("cw-prints:server:createCard", function(data)
     createBusinessCard(source, data)

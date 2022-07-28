@@ -14,6 +14,10 @@ Config.Texts = {
     cardMakerSubmit = "Create"
 }
 
-Config.Item = "business_card"
+Config.Items = {
+    { value = "business_card", text = "Business Card" },
+    { value = "coupon", text = "Coupon" },
+    { value = "flyer", text = "Flyer" },
+}
 
 Config.Cost = 1
