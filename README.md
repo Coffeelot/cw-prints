@@ -3,6 +3,10 @@ This script enables player created business cards. Comes with a warp to an inter
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
 [Video](https://youtu.be/CSYWQ2pf2a4)
+
+# Developed by Coffeelot and Wuggie
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
+[Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
 # Config 🔧
 **JobIsRequired**: Set to *true* if you want to lock this behind a job. Default is*false*\
 **AllowedJob**: The job you want to be able to use it. Only needed if JobIsRequired is*true*\
@@ -25,6 +29,3 @@ Also make sure the images are in qb-inventory>html>images
 # Dependencies
 * PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
-## Developed by Coffeelot#1586 and Wuggie#1683
-[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)\
-[Updates and Support](https://discord.gg/FJY4mtjaKr)
