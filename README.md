@@ -20,7 +20,15 @@ If you don't want to use the current warp and interior then all you need to do i
 # Add to qb-core ❗
 Items to add to qb-core>shared>items.lua if you want to used the included item
 
-NOTE: Currently the field `["unique"]` is set to `false` on all objects. This will cause your prints to be overwritten if you already have a stack in your inventory. The upside is that this means the print stacks are re-stackable (although stacking different ones will break them). You can set these field sto `true` if you preffeer to have the stacks ONLY stackable at the creation. Upside of having it true is that they won't overwrite each other!
+NOTE: Currently the field `["unique"]` is set to `false` on all objects. This will cause your prints to be overwritten if you already have a stack in your inventory upon a creation. The upside is that this means the print stacks are re-stackable (although stacking different ones will break them). You can set these fields to `true` if you preffeer to have the stacks ONLY stackable at the creation. Upside of having it true is that they won't overwrite each other! Basically:
+
+false:
++ can restack
+- will overwrite if placed in stack with different ones
+
+true:
++ Wont overwrite
+- can't restack
 
 ```
 ["business_card"] 					 = {["name"] ="business_card", 			  	  		["label"] = "A business card", 			["weight"] = 0, 		["type"] = "item", 		["image"] = "bctest.png", 			["unique"] = false,	 	["useable"] = true,			["created"] = nil,		["decay"] =nil, 	["shouldClose"] = false, ["combinable"] = nil,   ["description"] = "A businesscard"},
