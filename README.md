@@ -19,6 +19,9 @@ In the future we plan to make it support any type of printable item (flyers etc)
 If you don't want to use the current warp and interior then all you need to do is add this event to wherever you want to call it: `"cw-prints:client:openInteraction"` This will open the interaction menu for the script. 
 # Add to qb-core ❗
 Items to add to qb-core>shared>items.lua if you want to used the included item
+
+NOTE: Currently the field `["unique"]` is set to `false` on all objects. This will cause your prints to be overwritten if you already have a stack in your inventory. The upside is that this means the print stacks are re-stackable (although stacking different ones will break them). You can set these field sto `true` if you preffeer to have the stacks ONLY stackable at the creation. Upside of having it true is that they won't overwrite each other!
+
 ```
 ["business_card"] 					 = {["name"] ="business_card", 			  	  		["label"] = "A business card", 			["weight"] = 0, 		["type"] = "item", 		["image"] = "bctest.png", 			["unique"] = false,	 	["useable"] = true,			["created"] = nil,		["decay"] =nil, 	["shouldClose"] = false, ["combinable"] = nil,   ["description"] = "A businesscard"},
 ["coupon"] 					 = {["name"] = "coupon", 			  	  		["label"] ="Coupon", 				["weight"] = 0, 		["type"] = "item", 		["image"] ="coupon.png", 				["unique"] = false,	 	["useable"] = true,		["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] =nil,   ["description"] = "A Coupon"},
