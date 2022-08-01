@@ -10,7 +10,8 @@ local function createBusinessCard(source, data)
         local info = {}
         info.business = data[1]
         info.url = data[2]
-
+        info.type = data[4]
+        
         Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
         Player.Functions.AddItem(item, data[3], nil, info)
         TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")

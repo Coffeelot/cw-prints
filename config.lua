@@ -18,6 +18,7 @@ Config.Items = {
     { value = "business_card", text = "Business Card" },
     { value = "coupon", text = "Coupon" },
     { value = "flyer", text = "Flyer" },
+    { value = "menu", text = "Menu" },
 }
 
 Config.Cost = 1
