@@ -123,6 +123,23 @@ function dump(o)
     end
  end
 
+ RegisterNetEvent("cw-prints:client:GivePrint", function(data)
+    local type = data.id
+    local toPlayer, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+    if toPlayer ~= -1 and distance < 3 then
+        local itemInPockets = QBCore.Functions.HasItem(type)
+        if (itemInPockets) then
+            local playerId = GetPlayerServerId(toPlayer)
+            SetCurrentPedWeapon(PlayerPedId(),'WEAPON_UNARMED',true)
+            TriggerServerEvent("cw-prints:server:GiveItem", playerId, toPlayer, type)
+        else
+            QBCore.Functions.Notify("You do not have a "..type.." on you.", "error")
+        end
+    else
+        QBCore.Functions.Notify("No one nearby!", "error")
+    end
+ end)
+
 RegisterNetEvent("cw-prints:client:openInteraction", function()
 
     local dialog = exports['qb-input']:ShowInput({
@@ -162,7 +179,6 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
     
     if dialog ~= nil then
         local data = { dialog["business"], dialog["url"], dialog["amount"], dialog["type"] }
-
         TriggerServerEvent("cw-prints:server:createCard", data)
     else
         QBCore.Functions.Notify("Do your job better!", "error")

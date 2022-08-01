@@ -39,6 +39,48 @@ true:
 ```
 Also make sure the images are in qb-inventory>html>images
 
+## Adding print actions (to instantly give items) to QB-radialmenu:
+If you want to have the options to hand over business cards etc to nearest player then add this where you want it in the `config.lua` for `qb-radialmenu` (suggestion: after interactions, at line 95 for us at least). Any new item you add to the `config.lua` for `cw-prints` needs to be added here also if you want it to show up. Just set the `id` to the same thing as what you name your item and it should work!
+```
+{
+    id = 'prints',
+    title = 'Prints',
+    icon = 'address-card',
+    items = {
+        {
+            id = 'business_card',
+            title = 'Give Business Card',
+            icon = 'address-card',
+            type = 'client',
+            event = 'cw-prints:client:GivePrint',
+            shouldClose = true
+        }, {
+            id = 'flyer',
+            title = 'Give Flyer',
+            icon = 'scroll',
+            type = 'client',
+            event = 'cw-prints:client:GivePrint',
+            shouldClose = true
+        }, {
+            id = 'coupon',
+            title = 'Give Coupon',
+            icon = 'percent',
+            type = 'client',
+            event = 'cw-prints:client:GivePrint',
+            shouldClose = true
+        }, {
+            id = 'menu',
+            title = 'Give Menu',
+            icon = 'file-alt',
+            type = 'client',
+            event = 'cw-prints:client:GivePrint',
+            shouldClose = true
+        }
+    }
+}
+``` 
+
+## The Unique issue
 If you want to make the bussiness name show up in QB-Inventory:
 Open `app.js` in `qb-inventory`. In the function `FormatItemInfo` you will find several if statements. Head to the bottom of these and add this before the second to last `else` statement (after the `else if` that has `itemData.name == "labkey"`). Then add this between them:
 ```

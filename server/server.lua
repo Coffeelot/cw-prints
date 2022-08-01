@@ -2,7 +2,6 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local entryCoords = Config.Locations.shopEntranceCoords
 local exitCoords = Config.Locations.shopExitCoords
 
-
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
     local item = data[4]
@@ -22,6 +21,37 @@ for i, type in pairs(Config.Items) do
         TriggerClientEvent("cw-prints:client:businessCard", source, Item)
     end)
 end
+
+RegisterNetEvent("cw-prints:server:GiveItem", function(playerId, toPlayer, type)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local item = Player.Functions.GetItemByName(type)
+    local OtherPlayer = QBCore.Functions.GetPlayer(tonumber(playerId))
+
+    if item ~= nil then
+        if Player.Functions.RemoveItem(item.name, 1, item.slot) then
+			if OtherPlayer.Functions.AddItem(item.name, 1, false, item.info) then
+				TriggerClientEvent('inventory:client:ItemBox',playerId, QBCore.Shared.Items[item.name], "add")
+				TriggerClientEvent('QBCore:Notify', playerId, "You Received ".. 1 ..' '..item.label.." From "..Player.PlayerData.charinfo.firstname.." "..Player.PlayerData.charinfo.lastname)
+				TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, true)
+				TriggerClientEvent('inventory:client:ItemBox',src, QBCore.Shared.Items[item.name], "remove")
+				TriggerClientEvent('QBCore:Notify', src, "You gave " .. OtherPlayer.PlayerData.charinfo.firstname.." "..OtherPlayer.PlayerData.charinfo.lastname.. " " .. 1 .. " " .. item.label .."!")
+				TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, true)
+				TriggerClientEvent('qb-inventory:client:giveAnim', src)
+				TriggerClientEvent('qb-inventory:client:giveAnim', playerId)
+			else
+				Player.Functions.AddItem(item.name, 1, item.slot, item.info)
+				TriggerClientEvent('QBCore:Notify', src,  "The other players inventory is full!", "error")
+				TriggerClientEvent('QBCore:Notify', playerId,  "Your inventory is full!", "error")
+				TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
+				TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, false)
+			end
+		else
+			TriggerClientEvent('QBCore:Notify', src,  "You do not have enough of the item", "error")
+		end    
+    end
+
+end)
 
 
 RegisterNetEvent("cw-prints:server:createCard", function(data)
