@@ -11,10 +11,36 @@ RegisterNetEvent("cw-prints:client:createBusinessCard", function(data)
     TriggerServerEvent("cw-prints:server:createCard", data)
 end)
 
+local function hasValue(tbl, value)
+    for k, v in ipairs(tbl) do -- iterate table (for sequential tables only)
+        if v == value or (type(v) == "table" and hasValue(v, value)) then -- Compare value from the table directly with the value we are looking for, otherwise if the value is table, check its content for this value.
+            return true -- Found in this or nested table
+        end
+    end
+    return false -- Not found
+end
+
 local function isAllowed()
     if Config.JobIsRequired then
         local Player = QBCore.Functions.GetPlayerData()
-        if Player.job.name == Config.AllowedJob then
+        
+        local playerHasJob = hasValue(Config.AllowedJobs, Player.job.name)
+        if playerHasJob then
+            return true
+        else
+            return false
+        end
+    else
+        return true
+    end
+end
+
+local function isAllowedToPrint()
+    if Config.JobIsRequired then
+        local Player = QBCore.Functions.GetPlayerData()
+        
+        local playerHasJob = hasValue(Config.CanDoPrints, Player.job.name)
+        if playerHasJob then
             return true
         else
             return false
@@ -95,7 +121,7 @@ CreateThread(function()
                     type = "client",
                     event = "cw-prints:client:openInteraction",
                     label = "Print some cards!",
-                    canInteract = function() return isAllowed() end
+                    canInteract = function() return isAllowedToPrint() end
                 },
             },
             distance = 2.0
@@ -127,7 +153,9 @@ function dump(o)
     local type = data.id
     local toPlayer, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
     if toPlayer ~= -1 and distance < 3 then
+        print(type)
         local itemInPockets = QBCore.Functions.HasItem(type)
+        print('itemInPockets.slot', itemInPockets)
         if (itemInPockets) then
             local playerId = GetPlayerServerId(toPlayer)
             SetCurrentPedWeapon(PlayerPedId(),'WEAPON_UNARMED',true)

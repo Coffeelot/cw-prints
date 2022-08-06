@@ -1,7 +1,8 @@
 Config = {}
 
 Config.JobIsRequired = false
-Config.AllowedJob = 'print'
+Config.AllowedJobs = {'print', 'police', 'ambulance','spongebob'}
+Config.CanDoPrints = {'print'}
 
 Config.Locations = {
     shopEntranceCoords = vector3(-1335.18, -338.17, 36.69),
