@@ -59,8 +59,9 @@ RegisterNetEvent("cw-prints:server:createCard", function(data)
 end)
 
 
-QBCore.Commands.Add('makecard', 'make a business card (admin only)',{ { name = 'business', help = 'What business is the card for' }, { name = 'link', help = 'link to the card'}, name = "amount", help = "amount of cards" }, true, function(source, args)
-    TriggerClientEvent("cw-prints:client:createBusinessCard", source, args)
+QBCore.Commands.Add('makecard', 'make a business card (admin only)',{ { name = 'business', help = 'What business is the card for' }, { name = 'link', help = 'link to the card'}, {name = "amount", help = "amount of cards"}, { name = 'type', help = 'what type of card'} }, true, function(source, args)
+    local data = { args[1], args[2], args[3], args[4] }
+    createBusinessCard(source, data)
 end, "admin")
 
 RegisterNetEvent("cw-prints:server:TPInside", function()
