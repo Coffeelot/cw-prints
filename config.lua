@@ -1,8 +1,12 @@
 Config = {}
 
-Config.JobIsRequired = false
-Config.AllowedJobs = {'print', 'police', 'ambulance','spongebob'}
-Config.CanDoPrints = {'print'}
+Config.JobIsRequired = true
+Config.AllowedJobs = {
+    ['print'] = { doors = 1, print = 1}, -- example of a job that allows entrance from lvl 1 and printing from lvl 1
+    ['police'] = { doors = 2, print = 4}, -- example of a job that allows entrance from lvl 2 and printing only for 4
+    ['ambulance'] = { doors = 1}, -- example of job that allows entrance but no printing
+    ['spongebob'] = { doors = 4},
+}
 
 Config.Locations = {
     shopEntranceCoords = vector3(-1335.18, -338.17, 36.69),

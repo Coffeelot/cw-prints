@@ -20,28 +20,27 @@ local function hasValue(tbl, value)
     return false -- Not found
 end
 
-local function isAllowed()
+local function isAllowed(type)
     if Config.JobIsRequired then
         local Player = QBCore.Functions.GetPlayerData()
         
-        local playerHasJob = hasValue(Config.AllowedJobs, Player.job.name)
-        if playerHasJob then
-            return true
-        else
-            return false
-        end
-    else
-        return true
-    end
-end
+        local playerHasJob = Config.AllowedJobs[Player.job.name]
 
-local function isAllowedToPrint()
-    if Config.JobIsRequired then
-        local Player = QBCore.Functions.GetPlayerData()
+        local jobGradeReq = nil
+        if Config.AllowedJobs[Player.job.name] ~= nil then
+            jobGradeReq = Config.AllowedJobs[Player.job.name][type]
+        end        
         
-        local playerHasJob = hasValue(Config.CanDoPrints, Player.job.name)
         if playerHasJob then
-            return true
+            if jobGradeReq ~= nil then
+                if Player.job.grade.level >= jobGradeReq then
+                    return true
+                else
+                    return false
+                end
+            else
+                return false
+            end
         else
             return false
         end
@@ -69,7 +68,7 @@ CreateThread(function()
                     type = "client",
                     event = "cw-prints:client:tpIn",
                     label = "Enter Building",
-                    canInteract = function() return isAllowed() end
+                    canInteract = function() return isAllowed('doors') end
                 },
             },
             distance = 2.0
@@ -95,7 +94,7 @@ CreateThread(function()
                     type = "client",
                     event = "cw-prints:client:tpOut",
                     label = "Exit Building",
-                    canInteract = function() return isAllowed() end
+                    canInteract = function() return isAllowed('doors') end
                 },
             },
             distance = 2.0
@@ -121,7 +120,7 @@ CreateThread(function()
                     type = "client",
                     event = "cw-prints:client:openInteraction",
                     label = "Print some cards!",
-                    canInteract = function() return isAllowedToPrint() end
+                    canInteract = function() return isAllowed('print') end
                 },
             },
             distance = 2.0
