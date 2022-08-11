@@ -76,12 +76,13 @@ CreateThread(function()
 end)
 
 CreateThread(function()
-    local coords = Config.Locations.shopExitCoords
-    local boxData = {}
-
-    if boxData and boxData.created then
-        return
-    end
+    if Config.UseShop then 
+        local coords = Config.Locations.shopExitCoords
+        local boxData = {}
+    
+        if boxData and boxData.created then
+            return
+        end
         exports['qb-target']:AddBoxZone(shopExit, coords, 1.5, 1.5, {
             name = shopExit,
             heading = 0,
@@ -99,15 +100,17 @@ CreateThread(function()
             },
             distance = 2.0
         })
+    end
 end)
 
 CreateThread(function()
-    local coords = Config.Locations.interactionPoint
-    local boxData = {}
-
-    if boxData and boxData.created then
-        return
-    end
+    if Config.UseInteractionPoint then
+        local coords = Config.Locations.interactionPoint
+        local boxData = {}
+    
+        if boxData and boxData.created then
+            return
+        end
         exports['qb-target']:AddBoxZone(interactable, coords, 1.5, 1.5, {
             name = interactable,
             heading = 0,
@@ -125,6 +128,53 @@ CreateThread(function()
             },
             distance = 2.0
         })
+    end
+end)
+
+CreateThread(function()
+    if Config.UseAllPrinters then
+        for i,printer in pairs(Config.PrinterProps) do
+        
+        exports['qb-target']:AddTargetModel(printer, {
+            options = {
+                {
+                    type = "client",
+                    event = "cw-prints:client:openInteraction",
+                    label = "Print some cards!",
+                    canInteract = function() return isAllowed('print') end
+                },
+            },
+            distance = 2.0
+        })
+        end
+    end
+end)
+
+local printers = {}
+
+CreateThread(function()
+    if Config.UsePrinterSpawns then
+        for i,printer in pairs(Config.PrinterSpawns) do
+        
+        local printerLocation = printer.coords
+        local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, true,  true, true)
+        SetEntityHeading(printer, printerLocation.w)
+        FreezeEntityPosition(printer, true)
+        SetEntityAsMissionEntity(printer)
+
+        exports['qb-target']:AddTargetModel(printer, {
+            options = {
+                {
+                    type = "client",
+                    event = "cw-prints:client:openInteraction",
+                    label = "Print some cards!",
+                    canInteract = function() return isAllowed('print') end
+                },
+            },
+            distance = 2.0
+        })
+        end
+    end
 end)
 
 RegisterNetEvent("cw-prints:client:tpIn", function()
