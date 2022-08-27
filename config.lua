@@ -1,6 +1,6 @@
 Config = {}
 
-Config.JobIsRequired = true
+Config.JobIsRequired = false
 Config.AllowedJobs = {
     ['print'] = { doors = 1, print = 1},
     ['police'] = { doors = 2, print = 4},
