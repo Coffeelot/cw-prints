@@ -5,8 +5,15 @@ In the future we plan to make it support any type of printable item (flyers etc)
 [Video](https://youtu.be/CSYWQ2pf2a4)
 
 # Developed by Coffeelot and Wuggie
-[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
-[Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈
+
+**Support, updates and script previews**:
+
+[![Join The discord!](https://cdn.discordapp.com/attachments/977876510620909579/1013102122985857064/discordJoin.png)](https://discord.gg/FJY4mtjaKr )
+
+**All our scripts are and will remain free**. If you want to support what we do, you can buy us a coffee here:
+
+[![Buy Us a Coffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/cwscriptbois )
 # Config 🔧
 **JobIsRequired**: Set to *true* if you want to lock this behind a job. Default is*false*\
 **AllowedJob**: The job you want to be able to use it. Only needed if JobIsRequired is*true*\
