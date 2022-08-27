@@ -2,8 +2,7 @@
 This script enables player created business cards. Comes with a warp to an interior butthis can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
-[Video](https://youtu.be/CSYWQ2pf2a4)
-
+[![YOUTUBE VIDEO](http://img.youtube.com/vi/CSYWQ2pf2a4/0.jpg)](https://youtu.be/CSYWQ2pf2a4)
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈
 
