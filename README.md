@@ -1,5 +1,5 @@
 # cw-prints 🖨
-This script enables player created business cards. Comes with a warp to an interior butthis can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
+This script enables player created business cards. Comes with a warp to an interior but this can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
 [![YOUTUBE VIDEO](http://img.youtube.com/vi/CSYWQ2pf2a4/0.jpg)](https://youtu.be/CSYWQ2pf2a4)
@@ -86,7 +86,7 @@ If you want to have the options to hand over business cards etc to nearest playe
 }
 ``` 
 
-## The Unique issue
+## Adding text to QB-inventory
 If you want to make the bussiness name show up in QB-Inventory:
 Open `app.js` in `qb-inventory`. In the function `FormatItemInfo` you will find several if statements. Head to the bottom of these and add this before the second to last `else` statement (after the `else if` that has `itemData.name == "labkey"`). Then add this between them:
 ```
@@ -94,7 +94,39 @@ else if (itemData.name == "coupon" || itemData.name == "business_card" || itemDa
             $(".item-info-title").html("<p>" + itemData.label + "</p>");
             $(".item-info-description").html("<p>Business: " + itemData.info.business + "</p>");
         }
-``` 
+```
+## Adding text to Ox_Inventory
+Kudos to Khatrie for this 🙏 You can find the ox_inventory of cw-print version [here](https://github.com/Khatrie/cw-prints) and skip this (can't guarantee the fork is up to date tho), but the manual implementations is as follows:
+
+If you want to use CW-Prints with Ox_Inventory you'll be required to make a few changes to the functions in both server and client.
+In cw-prints > server > Server.lua find the function 
+
+`local function createBusinessCard(source, data)...` on line 5 and replace the entire function with:
+
+```
+local function createBusinessCard(source, data)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(source)
+    local item = data[4]
+
+        local info = {}
+        info.business = data[1]
+        info.url = data[2]
+        info.type = data[4]
+
+        Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
+        exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
+end
+```
+
+In cw-prints > client > Client.lua goto Line 7 and replace 
+
+`exports['ps-ui']:ShowImage(Item.info.url)`
+
+with 
+
+`exports['ps-ui']:ShowImage(Item.metadata.url)`
+
 
 # Dependencies
 * PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
