@@ -1,5 +1,5 @@
 # cw-prints 🖨
-This script enables player created business cards. Comes with a warp to an interior butthis can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
+This script enables player created business cards. Comes with a warp to an interior but this can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
 [![YOUTUBE VIDEO](http://img.youtube.com/vi/CSYWQ2pf2a4/0.jpg)](https://youtu.be/CSYWQ2pf2a4)
