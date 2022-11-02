@@ -95,6 +95,9 @@ else if (itemData.name == "coupon" || itemData.name == "business_card" || itemDa
             $(".item-info-description").html("<p>Business: " + itemData.info.business + "</p>");
         }
 ```
+## Adding text to Ox_Inventory
+Kudos to [Khatrie](https://github.com/Khatrie) for this 🙏
+If you want to use ox_inventory you can toggle it in the Config.Lua. Simply set Config.Inv to 'ox' if you want to use that rather than qb-inventory!
 # Dependencies
 * PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
