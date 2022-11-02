@@ -4,7 +4,11 @@ local shopExit = "shopExit"
 local interactable = "interacting"
 
 RegisterNetEvent("cw-prints:client:businessCard", function(Item)
-    exports['ps-ui']:ShowImage(Item.info.url)
+        if Config.Inv == 'qb' then 
+            exports['ps-ui']:ShowImage(Item.info.url)
+        elseif Config.Inv == 'ox' then
+            exports['ps-ui']:ShowImage(Item.metadata.url)
+        end    
 end)
 
 RegisterNetEvent("cw-prints:client:createBusinessCard", function(data)

@@ -11,6 +11,7 @@ Config.AllowedJobs = {
 -- Setup for the shop + interaction area
 Config.UseInteractionPoint = true -- set this to false if you don't want to use the stock locations
 Config.UseShop = true -- set this to false if you don't want to use the shop entrance/exit
+Config.Inv = 'qb' -- Can used 'qb' for QB Inventory or 'ox' for Ox_inventory
 
 Config.Locations = {
     shopEntranceCoords = vector3(-1335.18, -338.17, 36.69),
