@@ -11,9 +11,14 @@ local function createBusinessCard(source, data)
         info.url = data[2]
         info.type = data[4]
         
-        Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
-        Player.Functions.AddItem(item, data[3], nil, info)
-        TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
+	if Config.Inv == 'qb' then
+		Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
+		Player.Functions.AddItem(item, data[3], nil, info)
+		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
+	elseif Config.Inv == 'ox' then
+		Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
+		exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
+	end
 end
 
 for i, type in pairs(Config.Items) do
