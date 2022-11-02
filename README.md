@@ -95,39 +95,6 @@ else if (itemData.name == "coupon" || itemData.name == "business_card" || itemDa
             $(".item-info-description").html("<p>Business: " + itemData.info.business + "</p>");
         }
 ```
-## Adding text to Ox_Inventory
-Kudos to Khatrie for this 🙏 You can find the ox_inventory of cw-print version [here](https://github.com/Khatrie/cw-prints) and skip this (can't guarantee the fork is up to date tho), but the manual implementations is as follows:
-
-If you want to use CW-Prints with Ox_Inventory you'll be required to make a few changes to the functions in both server and client.
-In cw-prints > server > Server.lua find the function 
-
-`local function createBusinessCard(source, data)...` on line 5 and replace the entire function with:
-
-```
-local function createBusinessCard(source, data)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(source)
-    local item = data[4]
-
-        local info = {}
-        info.business = data[1]
-        info.url = data[2]
-        info.type = data[4]
-
-        Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
-        exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
-end
-```
-
-In cw-prints > client > Client.lua goto Line 7 and replace 
-
-`exports['ps-ui']:ShowImage(Item.info.url)`
-
-with 
-
-`exports['ps-ui']:ShowImage(Item.metadata.url)`
-
-
 # Dependencies
 * PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
