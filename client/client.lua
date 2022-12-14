@@ -16,6 +16,12 @@ function dump(o)
     end
  end
 
+if Config.Inv == 'ox' then 
+    AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+        exports.ox_inventory:displayMetadata('business', 'Business')
+    end)
+end
+
 RegisterNetEvent("cw-prints:client:businessCard", function(Item)
         if Config.Inv == 'qb' then 
             exports['ps-ui']:ShowImage(Item.info.url)
