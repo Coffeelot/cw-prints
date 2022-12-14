@@ -42,6 +42,9 @@ true:
 ["coupon"] 					 = {["name"] = "coupon", 			  	  		["label"] ="Coupon", 				["weight"] = 0, 		["type"] = "item", 		["image"] ="coupon.png", 				["unique"] = true,	 	["useable"] = true,		["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] =nil,   ["description"] = "A Coupon"},
 ["flyer"] 					 = {["name"] = "flyer", 			  	  		["label"] ="Flyer", 				["weight"] = 0, 		["type"] = "item", 		["image"] ="flyer.png", 				["unique"] = true,	 	["useable"] = true,		["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] =nil,   ["description"] = "A Flyer"},
 ["menu"] 					 = {["name"] = "menu", 			  	  		["label"] ="Menu", 				["weight"] = 0, 		["type"] = "item", 		["image"] ="menu.png", 				["unique"] = true,	 	["useable"] = true,		["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] =nil,   ["description"] = "A Menu"}
+["book"] 					 = {["name"] = "book", 			  	  		["label"] = "Book", 				["weight"] = 0, 		["type"] = "item", 		["image"] = "book.png", 				["unique"] = true,	 	["useable"] = true,			["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] = nil,   ["description"] = "A book"},
+["newspaper"] 					 = {["name"] = "newspaper", 			  	  		["label"] = "newspaper", 				["weight"] = 0, 		["type"] = "item", 		["image"] = "newspaper.png", 				["unique"] = true,	 	["useable"] = true,			["created"] = nil,		["decay"] = nil, 	["shouldClose"] = false, ["combinable"] = nil,   ["description"] = "A newspaper"},
+
 ```
 Also make sure the images are in qb-inventory>html>images
 

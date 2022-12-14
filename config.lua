@@ -35,11 +35,14 @@ Config.PrinterSpawns = {
     { prop = "v_res_printer", coords = vector4(1157.08, -3192.1, -38.16, 82.72)},
 }
 
-
 -- General Setup
 Config.Texts = {
     cardMakerHeader = "Business Card Maker 2000 (©1987)",
-    cardMakerSubmit = "Create"
+    cardMakerSubmit = "Create",
+    bookMaker1Header = "Book Maker ELITE EDITION (©1982)",
+    bookMaker1Submit = "Next",
+    bookMaker2Header = "Book Maker ELITE EDITION (©1982)",
+    bookMaker2Submit = "Create",
 }
 
 Config.Items = {
@@ -48,5 +51,10 @@ Config.Items = {
     { value = "flyer", text = "Flyer" },
     { value = "menu", text = "Menu" },
 }
+
+Config.BookItems = { 
+    { value = "book", text = "Book" },
+    { value = "newspaper", text = "Newspaper" },
+ }
 
 Config.Cost = 1

@@ -2,14 +2,27 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local entryCoords = Config.Locations.shopEntranceCoords
 local exitCoords = Config.Locations.shopExitCoords
 
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
+
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
     local item = data[4]
 
-        local info = {}
-        info.business = data[1]
-        info.url = data[2]
-        info.type = data[4]
+    local info = {}
+    info.business = data[1]
+    info.url = data[2]
+    info.type = data[4]
         
 	if Config.Inv == 'qb' then
 		Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
@@ -24,6 +37,32 @@ end
 for i, type in pairs(Config.Items) do
     QBCore.Functions.CreateUseableItem(type.value, function(source, Item)
         TriggerClientEvent("cw-prints:client:businessCard", source, Item)
+    end)
+end
+
+local function createBook(source, data)
+    local Player = QBCore.Functions.GetPlayer(source)
+    local item = data.type
+
+    local info = {}
+    info.name = data.name
+    info.pages = data.pages
+    info.type = data.type
+        
+	if Config.Inv == 'qb' then
+		Player.Functions.RemoveMoney("cash", data.amount*Config.Cost)
+		Player.Functions.AddItem(item, data.amount, nil, info)
+		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
+	elseif Config.Inv == 'ox' then
+		Player.Functions.RemoveMoney("cash", data.amount*data.amount*Config.Cost)
+		exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
+	end
+end
+
+
+for i, type in pairs(Config.BookItems) do
+    QBCore.Functions.CreateUseableItem(type.value, function(source, Item)
+        TriggerClientEvent("cw-prints:client:openBook", source, Item)
     end)
 end
 
@@ -61,6 +100,10 @@ end)
 
 RegisterNetEvent("cw-prints:server:createCard", function(data)
     createBusinessCard(source, data)
+end)
+
+RegisterNetEvent("cw-prints:server:createBook", function(data)
+    createBook(source, data)
 end)
 
 

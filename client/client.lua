@@ -3,6 +3,19 @@ local shopLocation = "shopLoc"
 local shopExit = "shopExit"
 local interactable = "interacting"
 
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
+
 RegisterNetEvent("cw-prints:client:businessCard", function(Item)
         if Config.Inv == 'qb' then 
             exports['ps-ui']:ShowImage(Item.info.url)
@@ -13,6 +26,34 @@ end)
 
 RegisterNetEvent("cw-prints:client:createBusinessCard", function(data)
     TriggerServerEvent("cw-prints:server:createCard", data)
+end)
+
+local function setBookOpen(item, bool) 
+    SetNuiFocus(bool, bool)
+    if bool then
+        TriggerEvent('animations:client:EmoteCommandStart', {"tablet2"})
+    else
+        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+    end
+    SendNUIMessage({
+        action = "cwPrintBook",
+        toggle = bool,
+        item = item,
+    })
+end
+
+RegisterNUICallback("closebook-callback", function(item, cb)
+    setBookOpen(item, false)
+    cb('ok')
+end)
+
+
+RegisterNetEvent("cw-prints:client:openBook", function(item)
+    QBCore.Functions.Notify("Press pages to flip. Press ESC to close", "success")
+    if Config.Inv == 'ox' then
+        item.data = item.metadata
+    end
+    setBookOpen(item, true)
 end)
 
 local function hasValue(tbl, value)
@@ -107,6 +148,21 @@ CreateThread(function()
     end
 end)
 
+local printOptions = {
+    {
+        type = "client",
+        event = "cw-prints:client:openInteraction",
+        label = "Print some cards",
+        canInteract = function() return isAllowed('print') end
+    },
+    {
+        type = "client",
+        event = "cw-prints:client:openBookInteraction",
+        label = "Print a book",
+        canInteract = function() return isAllowed('print') end
+    },
+}
+
 CreateThread(function()
     if Config.UseInteractionPoint then
         local coords = Config.Locations.interactionPoint
@@ -122,14 +178,7 @@ CreateThread(function()
             minZ = coords.z - 1.0,
             maxZ = coords.z + 1.0,
         }, {
-            options = {
-                {
-                    type = "client",
-                    event = "cw-prints:client:openInteraction",
-                    label = "Print some cards!",
-                    canInteract = function() return isAllowed('print') end
-                },
-            },
+            options = printOptions,
             distance = 2.0
         })
     end
@@ -140,14 +189,7 @@ CreateThread(function()
         for i,printer in pairs(Config.PrinterProps) do
         
         exports['qb-target']:AddTargetModel(printer, {
-            options = {
-                {
-                    type = "client",
-                    event = "cw-prints:client:openInteraction",
-                    label = "Print some cards!",
-                    canInteract = function() return isAllowed('print') end
-                },
-            },
+            options = printOptions,
             distance = 2.0
         })
         end
@@ -167,14 +209,7 @@ CreateThread(function()
         SetEntityAsMissionEntity(printer)
 
         exports['qb-target']:AddTargetModel(printer, {
-            options = {
-                {
-                    type = "client",
-                    event = "cw-prints:client:openInteraction",
-                    label = "Print some cards!",
-                    canInteract = function() return isAllowed('print') end
-                },
-            },
+            options = printOptions,
             distance = 2.0
         })
         end
@@ -189,26 +224,11 @@ RegisterNetEvent("cw-prints:client:tpOut", function()
     TriggerServerEvent("cw-prints:server:TPOutside")
 end)
 
-function dump(o)
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
-
- RegisterNetEvent("cw-prints:client:GivePrint", function(data)
+RegisterNetEvent("cw-prints:client:GivePrint", function(data)
     local type = data.id
     local toPlayer, distance = QBCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
     if toPlayer ~= -1 and distance < 3 then
-        print(type)
         local itemInPockets = QBCore.Functions.HasItem(type)
-        print('itemInPockets.slot', itemInPockets)
         if (itemInPockets) then
             local playerId = GetPlayerServerId(toPlayer)
             SetCurrentPedWeapon(PlayerPedId(),'WEAPON_UNARMED',true)
@@ -265,3 +285,81 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
         QBCore.Functions.Notify("Do your job better!", "error")
     end
 end)
+
+local function openNextBookInteraction(data)
+    local pages = tonumber(data.pages)
+    
+    local pageInputs = {}
+
+    for i = 1, pages do
+        pageInputs[#pageInputs+1] = {
+            text = "URL for Page #"..i, -- text you want to be displayed as a place holder
+            name = "page-"..i, -- name of the input should be unique otherwise it might override
+            type = "text", -- type of the input
+            isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+            -- default = "CID-1234", -- Default text option, this is optional
+        }
+    end
+
+    local dialog = exports['qb-input']:ShowInput({
+        header = Config.Texts.bookMaker1Header,
+        submitText = Config.Texts.bookMaker1Submit,
+        inputs = pageInputs,
+    })
+    
+    if dialog ~= nil then
+        local pageUrls = {}
+        for i = 1, pages do
+            pageUrls[i] = dialog['page-'..i]
+        end
+        local data = { name = data.name , pages = pageUrls, type = data.type, amount = data.amount }
+        TriggerServerEvent("cw-prints:server:createBook", data)
+    else
+        QBCore.Functions.Notify("Do your job better!", "error")
+    end
+end
+
+RegisterNetEvent("cw-prints:client:openBookInteraction", function()
+    local dialog = exports['qb-input']:ShowInput({
+        header = Config.Texts.bookMaker1Header,
+        submitText = Config.Texts.bookMaker1Submit,
+        inputs = {
+            {
+                text = "Book name", -- text you want to be displayed as a place holder
+                name = "name", -- name of the input should be unique otherwise it might override
+                type = "text", -- type of the input
+                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+                -- default = "CID-1234", -- Default text option, this is optional
+            },
+            {
+                text = "Type", -- text you want to be displayed as a place holder
+                name = "type", -- name of the input should be unique otherwise it might override
+                type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
+                options = Config.BookItems,
+                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+            },
+            {
+                text = "How many pages?", -- text you want to be displayed as a place holder
+                name = "pages", -- name of the input should be unique otherwise it might override
+                type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
+                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+                -- default = 1, -- Default number option, this is optional
+            },
+            {
+                text = "How many prints?", -- text you want to be displayed as a place holder
+                name = "amount", -- name of the input should be unique otherwise it might override
+                type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
+                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
+                -- default = 1, -- Default number option, this is optional
+            },
+        },
+    })
+    
+    if dialog ~= nil then
+        local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
+        openNextBookInteraction(data)
+    else
+        QBCore.Functions.Notify("Do your job better!", "error")
+    end
+end)
+

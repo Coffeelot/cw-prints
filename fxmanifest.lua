@@ -2,6 +2,8 @@ fx_version 'cerulean'
 
 game 'gta5'
 
+ui_page 'html/index.html'
+
 shared_scripts {
     '@qb-core/shared/locale.lua',
     'locales/en.lua',
@@ -14,6 +16,10 @@ client_scripts{
 
 server_scripts{
     'server/*.lua',
+}
+
+files {
+    'html/*',
 }
 
 dependency 'qb-target'

@@ -1,0 +1,121 @@
+/* GLOBAL */
+
+.hidden {
+  display: none !important;
+}
+
+#showImage {
+  padding: 10px;
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 45px;
+  text-align: center;
+  display: none;
+  background-color: orange;
+}
+
+#showImage .btn {
+  position: absolute;
+  top: 5%;
+  right: 0px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #3C3C3C;
+  color: #00FFBF;
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button {
+  background-color: white;
+  padding: 12px;
+}
+
+.contain {
+  object-fit: contain;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.outer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    width: 90vw;
+}
+
+.book-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.pages {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-page {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  cursor: pointer;
+}
+
+.left-image {
+  max-width: 30vw;
+  border-right: 2px solid #3C3C3C;
+}
+
+.right-image {
+  max-width: 30vw;
+  border-left: 2px solid #3C3C3C;
+}
+
+.right-page {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.screen-container {
+    background-color: var(--background-color);
+    width: 716px;
+    height: 456px;
+    margin-left: -5px;
+    margin-top: -4px;
+}
+
+.close-container {
+
+}
+
+.icon-close {
+  color: white
+}
