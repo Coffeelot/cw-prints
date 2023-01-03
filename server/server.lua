@@ -55,7 +55,7 @@ local function createBook(source, data)
 		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 	elseif Config.Inv == 'ox' then
 		Player.Functions.RemoveMoney("cash", data.amount*data.amount*Config.Cost)
-		exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
+		exports.ox_inventory:AddItem(src, item, data[3], {name = data[1], url = data[2], type = data[4]})
 	end
 end
 
