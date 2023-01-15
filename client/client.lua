@@ -55,7 +55,7 @@ end)
 
 
 RegisterNetEvent("cw-prints:client:openBook", function(item)
-    QBCore.Functions.Notify("Press pages to flip. Press ESC to close", "success")
+    QBCore.Functions.Notify(Lang:t("info.openBook"))
     if Config.Inv == 'ox' then
         item.data = item.metadata
     end
@@ -118,7 +118,7 @@ CreateThread(function()
                 {
                     type = "client",
                     event = "cw-prints:client:tpIn",
-                    label = "Enter Building",
+                    label = Lang:t("text.targetEnterBuilding"),
                     canInteract = function() return isAllowed('doors') end
                 },
             },
@@ -145,7 +145,7 @@ CreateThread(function()
                 {
                     type = "client",
                     event = "cw-prints:client:tpOut",
-                    label = "Exit Building",
+                    label = Lang:t("text.targetExitBuilding"),
                     canInteract = function() return isAllowed('doors') end
                 },
             },
@@ -158,13 +158,13 @@ local printOptions = {
     {
         type = "client",
         event = "cw-prints:client:openInteraction",
-        label = "Print some cards",
+        label = Lang:t("text.targetPrintCards"),
         canInteract = function() return isAllowed('print') end
     },
     {
         type = "client",
         event = "cw-prints:client:openBookInteraction",
-        label = "Print a book",
+        label = Lang:t("text.targetPrintBook"),
         canInteract = function() return isAllowed('print') end
     },
 }
@@ -240,10 +240,10 @@ RegisterNetEvent("cw-prints:client:GivePrint", function(data)
             SetCurrentPedWeapon(PlayerPedId(),'WEAPON_UNARMED',true)
             TriggerServerEvent("cw-prints:server:GiveItem", playerId, toPlayer, type)
         else
-            QBCore.Functions.Notify("You do not have a "..type.." on you.", "error")
+            QBCore.Functions.Notify(Lang:t("error.noItem", { value_type = type }), "error")
         end
     else
-        QBCore.Functions.Notify("No one nearby!", "error")
+        QBCore.Functions.Notify(Lang:t("error.noOneNearby"), "error")
     end
  end)
 
@@ -254,28 +254,28 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
         submitText = Config.Texts.cardMakerSubmit,
         inputs = {
             {
-                text = "Type", -- text you want to be displayed as a place holder
+                text = Lang:t("text.type"), -- text you want to be displayed as a place holder
                 name = "type", -- name of the input should be unique otherwise it might override
                 type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
                 options = Config.Items,
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
             },
             {
-                text = "Business name", -- text you want to be displayed as a place holder
+                text = Lang:t("text.businessName"), -- text you want to be displayed as a place holder
                 name = "business", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
                 -- default = "CID-1234", -- Default text option, this is optional
             },
             {
-                text = "Card Design (URL)", -- text you want to be displayed as a place holder
+                text = Lang:t("text.cardURL"), -- text you want to be displayed as a place holder
                 name = "url", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
                 -- default = "password123", -- Default text option, this is optional
             },
             {
-                text = "Amount of cards", -- text you want to be displayed as a place holder
+                text = Lang:t("text.cardAmount"), -- text you want to be displayed as a place holder
                 name = "amount", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
@@ -288,7 +288,7 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
         local data = { dialog["business"], dialog["url"], dialog["amount"], dialog["type"] }
         TriggerServerEvent("cw-prints:server:createCard", data)
     else
-        QBCore.Functions.Notify("Do your job better!", "error")
+        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
     end
 end)
 
@@ -299,7 +299,7 @@ local function openNextBookInteraction(data)
 
     for i = 1, pages do
         pageInputs[#pageInputs+1] = {
-            text = "URL for Page #"..i, -- text you want to be displayed as a place holder
+            text = Lang:t("text.pageURL") .. i, -- text you want to be displayed as a place holder
             name = "page-"..i, -- name of the input should be unique otherwise it might override
             type = "text", -- type of the input
             isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
@@ -321,7 +321,7 @@ local function openNextBookInteraction(data)
         local data = { name = data.name , pages = pageUrls, type = data.type, amount = data.amount }
         TriggerServerEvent("cw-prints:server:createBook", data)
     else
-        QBCore.Functions.Notify("Do your job better!", "error")
+        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
     end
 end
 
@@ -331,28 +331,28 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
         submitText = Config.Texts.bookMaker1Submit,
         inputs = {
             {
-                text = "Book name", -- text you want to be displayed as a place holder
+                text = Lang:t("text.bookName"), -- text you want to be displayed as a place holder
                 name = "name", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
                 -- default = "CID-1234", -- Default text option, this is optional
             },
             {
-                text = "Type", -- text you want to be displayed as a place holder
+                text = Lang:t("text.type"), -- text you want to be displayed as a place holder
                 name = "type", -- name of the input should be unique otherwise it might override
                 type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
                 options = Config.BookItems,
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
             },
             {
-                text = "How many pages?", -- text you want to be displayed as a place holder
+                text = Lang:t("text.pagesAmount"), -- text you want to be displayed as a place holder
                 name = "pages", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
                 -- default = 1, -- Default number option, this is optional
             },
             {
-                text = "How many prints?", -- text you want to be displayed as a place holder
+                text = Lang:t("text.printAmount"), -- text you want to be displayed as a place holder
                 name = "amount", -- name of the input should be unique otherwise it might override
                 type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
                 isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
@@ -365,7 +365,7 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
         local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
         openNextBookInteraction(data)
     else
-        QBCore.Functions.Notify("Do your job better!", "error")
+        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
     end
 end)
 
