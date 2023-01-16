@@ -74,25 +74,44 @@ RegisterNetEvent("cw-prints:server:GiveItem", function(playerId, toPlayer, type)
 
     if item ~= nil then
         if Player.Functions.RemoveItem(item.name, 1, item.slot) then
-			if OtherPlayer.Functions.AddItem(item.name, 1, false, item.info) then
-				TriggerClientEvent('inventory:client:ItemBox',playerId, QBCore.Shared.Items[item.name], "add")
-				TriggerClientEvent('QBCore:Notify', playerId, "You Received ".. 1 ..' '..item.label.." From "..Player.PlayerData.charinfo.firstname.." "..Player.PlayerData.charinfo.lastname)
-				TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, true)
-				TriggerClientEvent('inventory:client:ItemBox',src, QBCore.Shared.Items[item.name], "remove")
-				TriggerClientEvent('QBCore:Notify', src, "You gave " .. OtherPlayer.PlayerData.charinfo.firstname.." "..OtherPlayer.PlayerData.charinfo.lastname.. " " .. 1 .. " " .. item.label .."!")
-				TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, true)
-				TriggerClientEvent('qb-inventory:client:giveAnim', src)
-				TriggerClientEvent('qb-inventory:client:giveAnim', playerId)
-			else
-				Player.Functions.AddItem(item.name, 1, item.slot, item.info)
-				TriggerClientEvent('QBCore:Notify', src,  "The other players inventory is full!", "error")
-				TriggerClientEvent('QBCore:Notify', playerId,  "Your inventory is full!", "error")
-				TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
-				TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, false)
-			end
-		else
-			TriggerClientEvent('QBCore:Notify', src,  "You do not have enough of the item", "error")
-		end    
+            if OtherPlayer.Functions.AddItem(item.name, 1, false, item.info) then
+                TriggerClientEvent('inventory:client:ItemBox', playerId, QBCore.Shared.Items[item.name], "add")
+                TriggerClientEvent('QBCore:Notify', playerId,
+                    Lang:t("info.itemReceived",
+                        {
+                            value_amount = 1,
+                            value_lable = item.label,
+                            value_firstname = Player.PlayerData.charinfo.firstname,
+                            value_lastname = Player.PlayerData.charinfo.lastname
+                        }
+                    )
+                )
+                TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, true)
+                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item.name], "remove")
+                TriggerClientEvent('QBCore:Notify', src,
+                    Lang:t("info.gaveItem",
+                        {
+                            value_amount = 1,
+                            value_lable = item.label,
+                            value_firstname = OtherPlayer.PlayerData.charinfo.firstname,
+                            value_lastname = OtherPlayer.PlayerData.charinfo.lastname
+                        }
+                    )
+                )
+                TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, true)
+                TriggerClientEvent('qb-inventory:client:giveAnim', src)
+                TriggerClientEvent('qb-inventory:client:giveAnim', playerId)
+            else
+                Player.Functions.AddItem(item.name, 1, item.slot, item.info)
+                TriggerClientEvent('QBCore:Notify', src,
+                    Lang:t("error.otherInventoryFull"), "error")
+                TriggerClientEvent('QBCore:Notify', playerId, Lang:t("error.inventoryFull"), "error")
+                TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
+                TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, false)
+            end
+        else
+            TriggerClientEvent('QBCore:Notify', src, Lang:t("error.notEnoughItems"), "error")
+        end
     end
 
 end)
@@ -107,10 +126,13 @@ RegisterNetEvent("cw-prints:server:createBook", function(data)
 end)
 
 
-QBCore.Commands.Add('makecard', 'make a business card (admin only)',{ { name = 'business', help = 'What business is the card for' }, { name = 'link', help = 'link to the card'}, {name = "amount", help = "amount of cards"}, { name = 'type', help = 'what type of card'} }, true, function(source, args)
-    local data = { args[1], args[2], args[3], args[4] }
-    createBusinessCard(source, data)
-end, "admin")
+QBCore.Commands.Add('makecard', Lang:t("command.makecardAdmin"),
+    { { name = 'business', help = Lang:t("command.business") }, { name = 'link', help = Lang:t("command.link") },
+        { name = "amount", help = Lang:t("command.amount") }, { name = 'type', help = Lang:t("command.type") } }, true,
+    function(source, args)
+        local data = { args[1], args[2], args[3], args[4] }
+        createBusinessCard(source, data)
+    end, "admin")
 
 RegisterNetEvent("cw-prints:server:TPInside", function()
     TriggerClientEvent('QBCore:Command:TeleportToCoords', source, exitCoords)
