@@ -214,7 +214,7 @@ CreateThread(function()
         FreezeEntityPosition(printer, true)
         SetEntityAsMissionEntity(printer)
 
-        exports['qb-target']:AddTargetModel(printer, {
+        exports['qb-target']:AddTargetEntity(printer, {
             options = printOptions,
             distance = 2.0
         })
