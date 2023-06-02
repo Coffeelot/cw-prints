@@ -209,7 +209,7 @@ CreateThread(function()
         for i,printer in pairs(Config.PrinterSpawns) do
         
         local printerLocation = printer.coords
-        local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, true,  true, true)
+        local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, false,  false, true)
         SetEntityHeading(printer, printerLocation.w)
         FreezeEntityPosition(printer, true)
         SetEntityAsMissionEntity(printer)
