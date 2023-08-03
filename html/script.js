@@ -27,7 +27,7 @@ function setPages() {
 
     if (pages[currentPage][1])
         $('.right-image').attr("src", pages[currentPage][1])
-    else        
+    else
         $('.right-image').attr("src", '')
 
 }
@@ -72,7 +72,11 @@ function createPages(itemPages) {
 cwPrintBook.Open = function(data) {
     $('.book-container').fadeIn(1000);
     currentPage = 0
-    createPages(data.item.info.pages)
+    if(data.item.metadata) {
+        createPages(data.item.metadata.pages)
+    } else {
+        createPages(data.item.info.pages)
+    }
     setPages()
 }
 
