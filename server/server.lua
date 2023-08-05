@@ -17,21 +17,29 @@ function dump(o)
 
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
-    local item = data[4]
+    local item = data.type
 
     local info = {}
-    info.business = data[1]
-    info.url = data[2]
-    info.type = data[4]
-        
+    info.name = data.name
+    info.url = data.pages
+    info.type = data.type
+
 	if Config.Inv == 'qb' then
-		Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
-		Player.Functions.AddItem(item, data[3], nil, info)
+		Player.Functions.RemoveMoney("cash", data.amount * Config.PrintCost[item])
+		Player.Functions.AddItem(item, data.amount, nil, info)
 		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 	elseif Config.Inv == 'ox' then
-		Player.Functions.RemoveMoney("cash", data[3]*Config.Cost)
-		exports.ox_inventory:AddItem(src, item, data[3], {business = data[1], url = data[2], type = data[4]})
+        if data.amount < exports.ox_inventory:CanCarryAmount(source, item) then
+            if exports.ox_inventory:RemoveItem(source, "cash", data.amount * Config.PrintCost[item]) then
+                exports.ox_inventory:AddItem(source, item, data.amount, info)
+            else
+                QBCore.Functions.Notify(source, "Not Enough Money", "error")
+            end
+        else
+            QBCore.Functions.Notify(source, "Cannot carry amount", "error")
+        end
 	end
+
 end
 
 for i, type in pairs(Config.Items) do
@@ -48,14 +56,21 @@ local function createBook(source, data)
     info.name = data.name
     info.pages = data.pages
     info.type = data.type
-        
+
 	if Config.Inv == 'qb' then
-		Player.Functions.RemoveMoney("cash", data.amount*Config.Cost)
+		Player.Functions.RemoveMoney("cash",  data.amount * Config.PrintCost[item])
 		Player.Functions.AddItem(item, data.amount, nil, info)
 		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 	elseif Config.Inv == 'ox' then
-		Player.Functions.RemoveMoney("cash", data.amount*data.amount*Config.Cost)
-		exports.ox_inventory:AddItem(src, item, data[3], {name = data[1], url = data[2], type = data[4]})
+        if data.amount < exports.ox_inventory:CanCarryAmount(source, item) then
+            if exports.ox_inventory:RemoveItem(source, "cash", data.amount * Config.PrintCost[item]) then
+                exports.ox_inventory:AddItem(source, item, data.amount, info)
+            else
+                QBCore.Functions.Notify(source, "Not Enough Money", "error")
+            end
+        else
+            QBCore.Functions.Notify(source, "Cannot carry amount", "error")
+        end
 	end
 end
 
@@ -132,7 +147,7 @@ QBCore.Commands.Add('makecard', Lang:t("command.makecardAdmin"),
     function(source, args)
         local data = { args[1], args[2], args[3], args[4] }
         createBusinessCard(source, data)
-    end, "admin")
+    end, "dev")
 
 RegisterNetEvent("cw-prints:server:TPInside", function()
     TriggerClientEvent('QBCore:Command:TeleportToCoords', source, exitCoords)

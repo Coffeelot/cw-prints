@@ -16,25 +16,25 @@ function dump(o)
     end
  end
 
-if Config.Inv == 'ox' then 
+if Config.Inv == 'ox' then
     AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
         exports.ox_inventory:displayMetadata('business', 'Business')
     end)
 end
 
 RegisterNetEvent("cw-prints:client:businessCard", function(Item)
-        if Config.Inv == 'qb' then 
+        if Config.Inv == 'qb' then
             exports['ps-ui']:ShowImage(Item.info.url)
         elseif Config.Inv == 'ox' then
             exports['ps-ui']:ShowImage(Item.metadata.url)
-        end    
+        end
 end)
 
 RegisterNetEvent("cw-prints:client:createBusinessCard", function(data)
     TriggerServerEvent("cw-prints:server:createCard", data)
 end)
 
-local function setBookOpen(item, bool) 
+local function setBookOpen(item, bool)
     SetNuiFocus(bool, bool)
     if bool then
         TriggerEvent('animations:client:EmoteCommandStart', {"tablet2"})
@@ -74,14 +74,14 @@ end
 local function isAllowed(type)
     if Config.JobIsRequired then
         local Player = QBCore.Functions.GetPlayerData()
-        
+
         local playerHasJob = Config.AllowedJobs[Player.job.name]
 
         local jobGradeReq = nil
         if Config.AllowedJobs[Player.job.name] ~= nil then
             jobGradeReq = Config.AllowedJobs[Player.job.name][type]
-        end        
-        
+        end
+
         if playerHasJob then
             if jobGradeReq ~= nil then
                 if Player.job.grade.level >= jobGradeReq then
@@ -127,10 +127,10 @@ CreateThread(function()
 end)
 
 CreateThread(function()
-    if Config.UseShop then 
+    if Config.UseShop then
         local coords = Config.Locations.shopExitCoords
         local boxData = {}
-    
+
         if boxData and boxData.created then
             return
         end
@@ -173,7 +173,7 @@ CreateThread(function()
     if Config.UseInteractionPoint then
         local coords = Config.Locations.interactionPoint
         local boxData = {}
-    
+
         if boxData and boxData.created then
             return
         end
@@ -193,7 +193,7 @@ end)
 CreateThread(function()
     if Config.UseAllPrinters then
         for i,printer in pairs(Config.PrinterProps) do
-        
+
         exports['qb-target']:AddTargetModel(printer, {
             options = printOptions,
             distance = 2.0
@@ -207,7 +207,7 @@ local printers = {}
 CreateThread(function()
     if Config.UsePrinterSpawns then
         for i,printer in pairs(Config.PrinterSpawns) do
-        
+
         local printerLocation = printer.coords
         local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, false,  false, true)
         SetEntityHeading(printer, printerLocation.w)
@@ -283,9 +283,9 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
             }
         },
     })
-    
+
     if dialog ~= nil then
-        local data = { dialog["business"], dialog["url"], dialog["amount"], dialog["type"] }
+        local data = { business = dialog["business"], pages = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
         TriggerServerEvent("cw-prints:server:createCard", data)
     else
         QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
@@ -294,7 +294,7 @@ end)
 
 local function openNextBookInteraction(data)
     local pages = tonumber(data.pages)
-    
+
     local pageInputs = {}
 
     for i = 1, pages do
@@ -312,7 +312,7 @@ local function openNextBookInteraction(data)
         submitText = Config.Texts.bookMaker1Submit,
         inputs = pageInputs,
     })
-    
+
     if dialog ~= nil then
         local pageUrls = {}
         for i = 1, pages do
@@ -360,7 +360,7 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
             },
         },
     })
-    
+
     if dialog ~= nil then
         local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
         openNextBookInteraction(data)
@@ -368,4 +368,3 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
         QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
     end
 end)
-

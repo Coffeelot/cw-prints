@@ -20,7 +20,7 @@ Config.Locations = {
 }
 
 -- Setup for making ALL printer props interactable
-Config.UseAllPrinters = false -- set this to true if you want ALL printer props (defined in Config.PrinterProps) to be interactable 
+Config.UseAllPrinters = false -- set this to true if you want ALL printer props (defined in Config.PrinterProps) to be interactable
 Config.PrinterProps = {
     "prop_printer_01",
     "prop_printer_02",
@@ -52,9 +52,14 @@ Config.Items = {
     { value = "menu", text = "Menu" },
 }
 
-Config.BookItems = { 
+Config.BookItems = {
     { value = "book", text = "Book" },
-    { value = "newspaper", text = "Newspaper" },
  }
 
-Config.Cost = 1
+Config.PrintCost = {
+    ["business_card"] = 150,
+    ["coupon"] = 700,
+    ["flyer"] = 600,
+    ["menu"] = 300,
+    ["book"] = 1000,
+}
