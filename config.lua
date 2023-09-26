@@ -63,3 +63,12 @@ Config.PrintCost = {
     ["menu"] = 300,
     ["book"] = 1000,
 }
+
+Config.DynamicPages = {
+    example = {
+        "https://wallpapercave.com/wp/wp9414303.jpg",
+        "https://wallpapercave.com/wp/wp8802810.jpg",
+        "https://wallpapercave.com/wp/wp8802809.jpg",
+        "https://wallpapercave.com/dwp1x/wp8802815.jpg"
+    }
+}

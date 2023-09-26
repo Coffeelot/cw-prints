@@ -21,6 +21,25 @@ In the future we plan to make it support any type of printable item (flyers etc)
 **Item**: The item that is created and added to your inventory\
 **Cost**: Cost per card\
 
+## Dynamic pages
+If you want to have pages that you can edit via config so they can change over time you can use dynamic pages
+These are defined in Config.DynamicPages
+
+The script does not support creating these from the menu, so these need to be done in code. To add these, set the info/metadata field "useDynamicPages" to whatever name you want to use from your list of dynamic pages.
+
+So, in a server file where you want to add a dynamic print you can do this:
+```lua
+    info = {}
+    info.type = "book"
+    info.name = "Example Book With Dynamic Pages"
+    info.label = "Example Book With Dynamic Pages" -- Needed cause it's not handled automatically
+    info.useDynamicPages = 'example' -- this will pull pages from Config.DynamicPages.example
+
+    Player.Functions.AddItem('book', 1, false, info)
+```
+
+
+
 ## Changing interaction shake
 If you don't want to use the current warp and interior then all you need to do is add this event to wherever you want to call it: `"cw-prints:client:openInteraction"` This will open the interaction menu for the script. 
 # Add to qb-core ❗
