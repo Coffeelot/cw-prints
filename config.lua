@@ -9,9 +9,9 @@ Config.AllowedJobs = {
 }
 
 -- Setup for the shop + interaction area
-Config.UseInteractionPoint = true -- set this to false if you don't want to use the stock locations
-Config.UseShop = true -- set this to false if you don't want to use the shop entrance/exit
-Config.Inv = 'qb' -- Can used 'qb' for QB Inventory or 'ox' for Ox_inventory
+Config.UseInteractionPoint = false -- set this to false if you don't want to use the stock locations
+Config.UseShop = false -- set this to false if you don't want to use the shop entrance/exit
+Config.Inv = 'ox' -- Can used 'qb' for QB Inventory or 'ox' for Ox_inventory
 
 Config.Locations = {
     shopEntranceCoords = vector3(-1335.18, -338.17, 36.69),
@@ -20,7 +20,7 @@ Config.Locations = {
 }
 
 -- Setup for making ALL printer props interactable
-Config.UseAllPrinters = false -- set this to true if you want ALL printer props (defined in Config.PrinterProps) to be interactable
+Config.UseAllPrinters = true -- set this to true if you want ALL printer props (defined in Config.PrinterProps) to be interactable
 Config.PrinterProps = {
     "prop_printer_01",
     "prop_printer_02",
@@ -65,10 +65,16 @@ Config.PrintCost = {
 }
 
 Config.DynamicPages = {
-    example = {
-        "https://wallpapercave.com/wp/wp9414303.jpg",
-        "https://wallpapercave.com/wp/wp8802810.jpg",
-        "https://wallpapercave.com/wp/wp8802809.jpg",
-        "https://wallpapercave.com/dwp1x/wp8802815.jpg"
+    newPlayerGuide = {
+        "https://i.imgur.com/Z4JesMz.png", -- Front page
+        "https://i.imgur.com/zfSHf89.png", -- Driving school
+        "https://i.imgur.com/os0b6i4.png", -- Licenses
+        "https://i.imgur.com/RK0VXlq.png", -- Hot Dogs
+        "https://i.imgur.com/R3xo6oB.png", -- Blaze it
+        "https://i.imgur.com/geBfYpM.png", -- Drift button
+        "https://i.imgur.com/cu0ZQn7.png", -- Bus
+        "https://i.imgur.com/vaRNuZU.png", -- checks
+        "https://i.imgur.com/6TnKI31.png", -- tuner shop
+        "https://i.imgur.com/japoSEF.png" -- trucking
     }
 }

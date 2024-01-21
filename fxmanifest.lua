@@ -24,4 +24,3 @@ files {
 }
 
 dependency 'qb-target'
-dependency 'ps-ui'

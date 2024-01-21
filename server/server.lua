@@ -2,36 +2,25 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local entryCoords = Config.Locations.shopEntranceCoords
 local exitCoords = Config.Locations.shopExitCoords
 
-function dump(o)
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
-
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
     local item = data.type
+    local amount = tonumber(data.amount)
 
     local info = {}
-    info.name = data.name
-    info.url = data.pages
-    info.type = data.type
+    info.name = data.business
+    info.business = data.business
+    info.url = data.url
+    info.cardType = data.type
 
 	if Config.Inv == 'qb' then
-		Player.Functions.RemoveMoney("cash", data.amount * Config.PrintCost[item])
-		Player.Functions.AddItem(item, data.amount, nil, info)
+		Player.Functions.RemoveMoney("cash", amount * Config.PrintCost[item])
+		Player.Functions.AddItem(item, amount, nil, info)
 		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 	elseif Config.Inv == 'ox' then
-        if data.amount < exports.ox_inventory:CanCarryAmount(source, item) then
-            if exports.ox_inventory:RemoveItem(source, "cash", data.amount * Config.PrintCost[item]) then
-                exports.ox_inventory:AddItem(source, item, data.amount, info)
+        if amount < exports.ox_inventory:CanCarryAmount(source, item) then
+            if exports.ox_inventory:RemoveItem(source, "cash", amount * Config.PrintCost[item]) then
+                exports.ox_inventory:AddItem(source, item, amount, info)
             else
                 QBCore.Functions.Notify(source, "Not Enough Money", "error")
             end
@@ -55,16 +44,17 @@ local function createBook(source, data)
     local info = {}
     info.name = data.name
     info.pages = data.pages
-    info.type = data.type
+    info.bookType = data.type
+    local amount = tonumber(data.amount)
 
 	if Config.Inv == 'qb' then
-		Player.Functions.RemoveMoney("cash",  data.amount * Config.PrintCost[item])
-		Player.Functions.AddItem(item, data.amount, nil, info)
+		Player.Functions.RemoveMoney("cash",  amount * Config.PrintCost[item])
+		Player.Functions.AddItem(item, amount, nil, info)
 		TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "add")
 	elseif Config.Inv == 'ox' then
-        if data.amount < exports.ox_inventory:CanCarryAmount(source, item) then
-            if exports.ox_inventory:RemoveItem(source, "cash", data.amount * Config.PrintCost[item]) then
-                exports.ox_inventory:AddItem(source, item, data.amount, info)
+        if amount < exports.ox_inventory:CanCarryAmount(source, item) then
+            if exports.ox_inventory:RemoveItem(source, "cash", amount * Config.PrintCost[item]) then
+                exports.ox_inventory:AddItem(source, item, amount, info)
             else
                 QBCore.Functions.Notify(source, "Not Enough Money", "error")
             end
@@ -77,17 +67,6 @@ end
 
 for i, type in pairs(Config.BookItems) do
     QBCore.Functions.CreateUseableItem(type.value, function(source, Item)
-        if Config.Inv == 'qb' then
-            if Item.info.useDynamicPages then
-                Item.info.pages = Config.DynamicPages[Item.metadata.useDynamicPages]
-            end
-        end
-        if Config.Inv == 'ox' then
-            if Item.metadata.useDynamicPages then
-                Item.metadata.pages = Config.DynamicPages[Item.metadata.useDynamicPages]
-            end 
-        end
-
         TriggerClientEvent("cw-prints:client:openBook", source, Item)
     end)
 end

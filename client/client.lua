@@ -3,31 +3,30 @@ local shopLocation = "shopLoc"
 local shopExit = "shopExit"
 local interactable = "interacting"
 
-function dump(o)
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
-
 if Config.Inv == 'ox' then
     AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-        exports.ox_inventory:displayMetadata('business', 'Business')
+        exports.ox_inventory:displayMetadata('business', 'Business Name')
+        exports.ox_inventory:displayMetadata('pages', 'Pages')
     end)
 end
 
-RegisterNetEvent("cw-prints:client:businessCard", function(Item)
-        if Config.Inv == 'qb' then
-            exports['ps-ui']:ShowImage(Item.info.url)
-        elseif Config.Inv == 'ox' then
-            exports['ps-ui']:ShowImage(Item.metadata.url)
-        end
+local function setCardOpen(item, bool)
+    local url = ''
+    if Config.Inv == 'qb' then
+        url = item.info.url
+    elseif Config.Inv == 'ox' then
+        url = item.metadata.url
+    end
+    SetNuiFocus(bool, bool)
+    SendNUIMessage({
+        action = "cwPrintCard",
+        toggle = bool,
+        url = url,
+    })
+end
+
+RegisterNetEvent("cw-prints:client:businessCard", function(item)
+    setCardOpen(item, true)
 end)
 
 RegisterNetEvent("cw-prints:client:createBusinessCard", function(data)
@@ -36,11 +35,7 @@ end)
 
 local function setBookOpen(item, bool)
     SetNuiFocus(bool, bool)
-    if bool then
-        TriggerEvent('animations:client:EmoteCommandStart', {"tablet2"})
-    else
-        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-    end
+    TriggerEvent('animations:client:EmoteCommandStart', {"book"})
     SendNUIMessage({
         action = "cwPrintBook",
         toggle = bool,
@@ -49,8 +44,8 @@ local function setBookOpen(item, bool)
 end
 
 RegisterNUICallback("closebook-callback", function(item, cb)
-    setBookOpen(item, false)
-    cb('ok')
+    SetNuiFocus(false, false)
+    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
 end)
 
 
@@ -285,7 +280,7 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
     })
 
     if dialog ~= nil then
-        local data = { business = dialog["business"], pages = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
+        local data = { business = dialog["business"], url = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
         TriggerServerEvent("cw-prints:server:createCard", data)
     else
         QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")

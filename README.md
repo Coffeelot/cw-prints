@@ -1,4 +1,6 @@
 # cw-prints 🖨
+### ⭐ Check out our [Tebex store](https://cw-scripts.tebex.io/category/2523396) for some cheap scripts ⭐
+
 This script enables player created business cards. Comes with a warp to an interior but this can easily be ignored if you want to use it in any other fashion. Easilyconfigured in the *Config.Lua*.
 In the future we plan to make it support any type of printable item (flyers etc)
 # Preview 📽
@@ -6,13 +8,14 @@ In the future we plan to make it support any type of printable item (flyers etc)
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈
 
-**Support, updates and script previews**:
+# **Support, updates and script previews**:
 
 [![Join The discord!](https://cdn.discordapp.com/attachments/977876510620909579/1013102122985857064/discordJoin.png)](https://discord.gg/FJY4mtjaKr )
 
-**All our scripts are and will remain free**. If you want to support what we do, you can buy us a coffee here:
+# If you want to support what we do, you can buy us a coffee here:
 
 [![Buy Us a Coffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/cwscriptbois )
+
 # Config 🔧
 **JobIsRequired**: Set to *true* if you want to lock this behind a job. Default is*false*\
 **AllowedJob**: The job you want to be able to use it. Only needed if JobIsRequired is*true*\
@@ -121,5 +124,4 @@ else if (itemData.name == "coupon" || itemData.name == "business_card" || itemDa
 Kudos to [Khatrie](https://github.com/Khatrie) for this 🙏
 If you want to use ox_inventory you can toggle it in the Config.Lua. Simply set Config.Inv to 'ox' if you want to use that rather than qb-inventory!
 # Dependencies
-* PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
