@@ -218,11 +218,13 @@ CreateThread(function()
 end)
 
 RegisterNetEvent("cw-prints:client:tpIn", function()
-    TriggerServerEvent("cw-prints:server:TPInside")
+    local ped = PlayerPedId()
+    SetPedCoordsKeepVehicle(ped, Config.Locations.shopExitCoords)
 end)
 
 RegisterNetEvent("cw-prints:client:tpOut", function()
-    TriggerServerEvent("cw-prints:server:TPOutside")
+    local ped = PlayerPedId()
+    SetPedCoordsKeepVehicle(ped, Config.Locations.shopEntranceCoords)
 end)
 
 RegisterNetEvent("cw-prints:client:GivePrint", function(data)
@@ -243,123 +245,222 @@ RegisterNetEvent("cw-prints:client:GivePrint", function(data)
  end)
 
 RegisterNetEvent("cw-prints:client:openInteraction", function()
-
-    local dialog = exports['qb-input']:ShowInput({
-        header = Config.Texts.cardMakerHeader,
-        submitText = Config.Texts.cardMakerSubmit,
-        inputs = {
+    if Config.UseOxLib then
+        local dialog = lib.inputDialog(
+            Config.Texts.cardMakerHeader,
             {
-                text = Lang:t("text.type"), -- text you want to be displayed as a place holder
-                name = "type", -- name of the input should be unique otherwise it might override
-                type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
-                options = Config.Items,
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-            },
-            {
-                text = Lang:t("text.businessName"), -- text you want to be displayed as a place holder
-                name = "business", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = "CID-1234", -- Default text option, this is optional
-            },
-            {
-                text = Lang:t("text.cardURL"), -- text you want to be displayed as a place holder
-                name = "url", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = "password123", -- Default text option, this is optional
-            },
-            {
-                text = Lang:t("text.cardAmount"), -- text you want to be displayed as a place holder
-                name = "amount", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = 1, -- Default number option, this is optional
+                {
+                    label = Lang:t("text.type"),
+                    name = "type", 
+                    type = "select", 
+                    options = Config.Items,
+                    required = true,
+                },
+                {
+                    label = Lang:t("text.businessName"),
+                    name = "business", 
+                    type = "input", 
+                    required = true,
+                },
+                {
+                    label = Lang:t("text.cardURL"),
+                    name = "url", 
+                    type = "input", 
+                    required = true,
+                },
+                {
+                    label = Lang:t("text.cardAmount"),
+                    name = "amount", 
+                    type = "number", 
+                    required = true,
+                    min = 0
+                }
             }
-        },
-    })
-
-    if dialog ~= nil then
-        local data = { business = dialog["business"], url = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
-        TriggerServerEvent("cw-prints:server:createCard", data)
+        )
+        if dialog ~= nil then
+            local data = { business = dialog[2], url = dialog[3], amount = dialog[4], type = dialog[1] }
+            TriggerServerEvent("cw-prints:server:createCard", data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     else
-        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        local dialog = exports['qb-input']:ShowInput({
+            header = Config.Texts.cardMakerHeader,
+            submitText = Config.Texts.cardMakerSubmit,
+            inputs = {
+                {
+                    text = Lang:t("text.type"), 
+                    name = "type", 
+                    type = "select", 
+                    options = Config.Items,
+                    isRequired = true,
+                },
+                {
+                    text = Lang:t("text.businessName"), 
+                    name = "business", 
+                    type = "text", 
+                    isRequired = true,
+                },
+                {
+                    text = Lang:t("text.cardURL"), 
+                    name = "url", 
+                    type = "text", 
+                    isRequired = true,
+                },
+                {
+                    text = Lang:t("text.cardAmount"), 
+                    name = "amount", 
+                    type = "text", 
+                    isRequired = true,
+                }
+            },
+        })
+    
+        if dialog ~= nil then
+            local data = { business = dialog["business"], url = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
+            TriggerServerEvent("cw-prints:server:createCard", data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     end
 end)
 
 local function openNextBookInteraction(data)
     local pages = tonumber(data.pages)
-
+    
     local pageInputs = {}
-
-    for i = 1, pages do
-        pageInputs[#pageInputs+1] = {
-            text = Lang:t("text.pageURL") .. i, -- text you want to be displayed as a place holder
-            name = "page-"..i, -- name of the input should be unique otherwise it might override
-            type = "text", -- type of the input
-            isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-            -- default = "CID-1234", -- Default text option, this is optional
-        }
-    end
-
-    local dialog = exports['qb-input']:ShowInput({
-        header = Config.Texts.bookMaker1Header,
-        submitText = Config.Texts.bookMaker1Submit,
-        inputs = pageInputs,
-    })
-
-    if dialog ~= nil then
-        local pageUrls = {}
+    if Config.UseOxLib then
         for i = 1, pages do
-            pageUrls[i] = dialog['page-'..i]
+            pageInputs[#pageInputs+1] = {
+                label = Lang:t("text.pageURL") .. i, 
+                type = "input", 
+                required = true, 
+            }
         end
-        local data = { name = data.name , pages = pageUrls, type = data.type, amount = data.amount }
-        TriggerServerEvent("cw-prints:server:createBook", data)
+    
+        local dialog = lib.inputDialog(
+            Config.Texts.bookMaker1Header,
+            pageInputs
+        )
+    
+        if dialog ~= nil then
+            local pageUrls = {}
+            for i = 1, pages do
+                pageUrls[i] = dialog[i]
+            end
+            local data = { name = data.name , pages = dialog, type = data.type, amount = data.amount }
+            TriggerServerEvent("cw-prints:server:createBook", data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     else
-        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        for i = 1, pages do
+            pageInputs[#pageInputs+1] = {
+                text = Lang:t("text.pageURL") .. i, 
+                name = "page-"..i, 
+                type = "text", 
+                isRequired = true, 
+            }
+        end
+    
+        local dialog = exports['qb-input']:ShowInput({
+            header = Config.Texts.bookMaker1Header,
+            submitText = Config.Texts.bookMaker1Submit,
+            inputs = pageInputs,
+        })
+    
+        if dialog ~= nil then
+            local pageUrls = {}
+            for i = 1, pages do
+                pageUrls[i] = dialog['page-'..i]
+            end
+            local data = { name = data.name , pages = pageUrls, type = data.type, amount = data.amount }
+            TriggerServerEvent("cw-prints:server:createBook", data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     end
 end
 
 RegisterNetEvent("cw-prints:client:openBookInteraction", function()
-    local dialog = exports['qb-input']:ShowInput({
-        header = Config.Texts.bookMaker1Header,
-        submitText = Config.Texts.bookMaker1Submit,
-        inputs = {
+    if Config.UseOxLib then
+        local dialog = lib.inputDialog(
+            Config.Texts.bookMaker1Header,
             {
-                text = Lang:t("text.bookName"), -- text you want to be displayed as a place holder
-                name = "name", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = "CID-1234", -- Default text option, this is optional
-            },
-            {
-                text = Lang:t("text.type"), -- text you want to be displayed as a place holder
-                name = "type", -- name of the input should be unique otherwise it might override
-                type = "select", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
-                options = Config.BookItems,
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-            },
-            {
-                text = Lang:t("text.pagesAmount"), -- text you want to be displayed as a place holder
-                name = "pages", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = 1, -- Default number option, this is optional
-            },
-            {
-                text = Lang:t("text.printAmount"), -- text you want to be displayed as a place holder
-                name = "amount", -- name of the input should be unique otherwise it might override
-                type = "text", -- type of the input - number will not allow non-number characters in the field so only accepts 0-9
-                isRequired = true, -- Optional [accepted values: true | false] but will submit the form if no value is inputted
-                -- default = 1, -- Default number option, this is optional
-            },
-        },
-    })
+                {
+                    label = Lang:t("text.bookName"), 
+                    name = "name", 
+                    type = "input", 
+                    required = true, 
+                },
+                {
+                    label = Lang:t("text.type"), 
+                    name = "type", 
+                    type = "select", 
+                    options = Config.BookItems,
+                    required = true, 
+                },
+                {
+                    label = Lang:t("text.pagesAmount"), 
+                    name = "pages", 
+                    type = "number", 
+                    required = true, 
+                    min = 1
 
-    if dialog ~= nil then
-        local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
-        openNextBookInteraction(data)
+                },
+                {
+                    label = Lang:t("text.printAmount"), 
+                    name = "amount", 
+                    type = "number", 
+                    required = true, 
+                    min = 1
+                },
+            }
+        )
+        if dialog ~= nil then
+            local data = { name = dialog[1],  pages = dialog[3], type = dialog[2], amount = dialog[4] }
+            openNextBookInteraction(data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     else
-        QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        local dialog = exports['qb-input']:ShowInput({
+            header = Config.Texts.bookMaker1Header,
+            submitText = Config.Texts.bookMaker1Submit,
+            inputs = {
+                {
+                    text = Lang:t("text.bookName"), 
+                    name = "name", 
+                    type = "text", 
+                    isRequired = true, 
+                },
+                {
+                    text = Lang:t("text.type"), 
+                    name = "type", 
+                    type = "select", 
+                    options = Config.BookItems,
+                    isRequired = true, 
+                },
+                {
+                    text = Lang:t("text.pagesAmount"), 
+                    name = "pages", 
+                    type = "text", 
+                    isRequired = true, 
+                },
+                {
+                    text = Lang:t("text.printAmount"), 
+                    name = "amount", 
+                    type = "text", 
+                    isRequired = true, 
+                },
+            },
+        })
+    
+        if dialog ~= nil then
+            local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
+            openNextBookInteraction(data)
+        else
+            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+        end
     end
 end)

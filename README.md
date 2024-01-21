@@ -48,7 +48,9 @@ If you don't want to use the current warp and interior then all you need to do i
 # Add to qb-core ❗
 Items to add to qb-core>shared>items.lua if you want to used the included item
 
-NOTE: Currently the field `["unique"]` is set to `true` on all objects. This means after you get the initial stack, if you split it you can't restack again! Change these to `false` if you rather want them to stack but risk losing some, as stacking different kinds will make them all one of a kind.
+> NOTE: Currently the field `["unique"]` is set to `true` on all objects. This means after you get the initial stack, if you split it you can't restack again! Change these to `false` if you rather want them to stack but risk losing some, as stacking different kinds will make them all one of a kind.
+
+> Ox Note: If you got ox, you dont need to bother with this since Ox can stack depending on metadata.
 
 Basically:
 false:

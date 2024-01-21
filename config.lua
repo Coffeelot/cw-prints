@@ -11,7 +11,8 @@ Config.AllowedJobs = {
 -- Setup for the shop + interaction area
 Config.UseInteractionPoint = false -- set this to false if you don't want to use the stock locations
 Config.UseShop = false -- set this to false if you don't want to use the shop entrance/exit
-Config.Inv = 'ox' -- Can used 'qb' for QB Inventory or 'ox' for Ox_inventory
+Config.Inv = 'ox' -- Either 'ox' or 'qb'. If you type anything else then thats a you issue
+Config.UseOxLib = false -- Use ox input rather than qb (you'll need to add '@ox_lib/init.lua' in shared_scripts in fxmanifest) 
 
 Config.Locations = {
     shopEntranceCoords = vector3(-1335.18, -338.17, 36.69),
