@@ -137,7 +137,7 @@ QBCore.Commands.Add('makecard', Lang:t("command.makecardAdmin"),
     function(source, args)
         local data = { args[1], args[2], args[3], args[4] }
         createBusinessCard(source, data)
-    end, "dev")
+    end, "admin")
 
 RegisterNetEvent("cw-prints:server:TPInside", function()
     TriggerClientEvent('QBCore:Command:TeleportToCoords', source, exitCoords)
