@@ -67,6 +67,16 @@ end
 
 for i, type in pairs(Config.BookItems) do
     QBCore.Functions.CreateUseableItem(type.value, function(source, Item)
+        if Config.Inv == 'qb' then
+            if Item.info.useDynamicPages then
+                Item.info.pages = Config.DynamicPages[Item.metadata.useDynamicPages]
+            end
+        end
+        if Config.Inv == 'ox' then
+            if Item.metadata.useDynamicPages then
+                Item.metadata.pages = Config.DynamicPages[Item.metadata.useDynamicPages]
+            end 
+        end
         TriggerClientEvent("cw-prints:client:openBook", source, Item)
     end)
 end
