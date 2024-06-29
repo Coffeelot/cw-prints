@@ -3,6 +3,17 @@ local shopLocation = "shopLoc"
 local shopExit = "shopExit"
 local interactable = "interacting"
 
+local function notify(text, type)
+    if Config.UseOxLib then
+        lib.notify({
+            title = text,
+            type = type,
+        })
+    else 
+        notify(text, type)
+    end
+end
+
 if Config.Inv == 'ox' then
     AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
         exports.ox_inventory:displayMetadata('business', 'Business Name')
@@ -53,7 +64,7 @@ end)
 
 
 RegisterNetEvent("cw-prints:client:openBook", function(item)
-    QBCore.Functions.Notify(Lang:t("info.openBook"))
+    notify(Lang:t("info.openBook"))
     if Config.Inv == 'ox' then
         item.data = item.metadata
     end
@@ -246,12 +257,17 @@ RegisterNetEvent("cw-prints:client:GivePrint", function(data)
             SetCurrentPedWeapon(PlayerPedId(),'WEAPON_UNARMED',true)
             TriggerServerEvent("cw-prints:server:GiveItem", playerId, toPlayer, type)
         else
-            QBCore.Functions.Notify(Lang:t("error.noItem", { value_type = type }), "error")
+            notify(Lang:t("error.noItem", { value_type = type }), "error")
         end
     else
-        QBCore.Functions.Notify(Lang:t("error.noOneNearby"), "error")
+        notify(Lang:t("error.noOneNearby"), "error")
     end
  end)
+
+ RegisterNetEvent('cw-prints:client:notify', function(message, type)
+    print('notify')
+    notify(message, type)
+end)
 
 RegisterNetEvent("cw-prints:client:openInteraction", function()
     if Config.UseOxLib then
@@ -290,7 +306,7 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
             local data = { business = dialog[2], url = dialog[3], amount = dialog[4], type = dialog[1] }
             TriggerServerEvent("cw-prints:server:createCard", data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     else
         local dialog = exports['qb-input']:ShowInput({
@@ -329,7 +345,7 @@ RegisterNetEvent("cw-prints:client:openInteraction", function()
             local data = { business = dialog["business"], url = dialog["url"], amount = dialog["amount"], type = dialog["type"] }
             TriggerServerEvent("cw-prints:server:createCard", data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     end
 end)
@@ -360,7 +376,7 @@ local function openNextBookInteraction(data)
             local data = { name = data.name , pages = dialog, type = data.type, amount = data.amount }
             TriggerServerEvent("cw-prints:server:createBook", data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     else
         for i = 1, pages do
@@ -386,7 +402,7 @@ local function openNextBookInteraction(data)
             local data = { name = data.name , pages = pageUrls, type = data.type, amount = data.amount }
             TriggerServerEvent("cw-prints:server:createBook", data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     end
 end
@@ -430,7 +446,7 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
             local data = { name = dialog[1],  pages = dialog[3], type = dialog[2], amount = dialog[4] }
             openNextBookInteraction(data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     else
         local dialog = exports['qb-input']:ShowInput({
@@ -469,7 +485,7 @@ RegisterNetEvent("cw-prints:client:openBookInteraction", function()
             local data = { name = dialog["name"],  pages = dialog["pages"], type = dialog["type"], amount = dialog['amount'] }
             openNextBookInteraction(data)
         else
-            QBCore.Functions.Notify(Lang:t("error.betterJob"), "error")
+            notify(Lang:t("error.betterJob"), "error")
         end
     end
 end)

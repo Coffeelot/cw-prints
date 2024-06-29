@@ -91,7 +91,7 @@ RegisterNetEvent("cw-prints:server:GiveItem", function(playerId, toPlayer, type)
         if Player.Functions.RemoveItem(item.name, 1, item.slot) then
             if OtherPlayer.Functions.AddItem(item.name, 1, false, item.info) then
                 TriggerClientEvent('inventory:client:ItemBox', playerId, QBCore.Shared.Items[item.name], "add")
-                TriggerClientEvent('QBCore:Notify', playerId,
+                TriggerClientEvent('cw-prints:client:notify', playerId,
                     Lang:t("info.itemReceived",
                         {
                             value_amount = 1,
@@ -103,7 +103,7 @@ RegisterNetEvent("cw-prints:server:GiveItem", function(playerId, toPlayer, type)
                 )
                 TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, true)
                 TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item.name], "remove")
-                TriggerClientEvent('QBCore:Notify', src,
+                TriggerClientEvent('cw-prints:client:notify', src,
                     Lang:t("info.gaveItem",
                         {
                             value_amount = 1,
@@ -118,14 +118,14 @@ RegisterNetEvent("cw-prints:server:GiveItem", function(playerId, toPlayer, type)
                 TriggerClientEvent('qb-inventory:client:giveAnim', playerId)
             else
                 Player.Functions.AddItem(item.name, 1, item.slot, item.info)
-                TriggerClientEvent('QBCore:Notify', src,
+                TriggerClientEvent('cw-prints:client:notify', src,
                     Lang:t("error.otherInventoryFull"), "error")
-                TriggerClientEvent('QBCore:Notify', playerId, Lang:t("error.inventoryFull"), "error")
+                TriggerClientEvent('cw-prints:client:notify', playerId, Lang:t("error.inventoryFull"), "error")
                 TriggerClientEvent("inventory:client:UpdatePlayerInventory", src, false)
                 TriggerClientEvent("inventory:client:UpdatePlayerInventory", playerId, false)
             end
         else
-            TriggerClientEvent('QBCore:Notify', src, Lang:t("error.notEnoughItems"), "error")
+            TriggerClientEvent('cw-prints:client:notify', src, Lang:t("error.notEnoughItems"), "error")
         end
     end
 
