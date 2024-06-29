@@ -26,6 +26,9 @@ local function setCardOpen(item, bool)
 end
 
 RegisterNetEvent("cw-prints:client:businessCard", function(item)
+    if Config.Inv == 'ox' then
+        item.data = item.metadata
+    end
     setCardOpen(item, true)
 end)
 
@@ -188,11 +191,14 @@ end)
 CreateThread(function()
     if Config.UseAllPrinters then
         for i,printer in pairs(Config.PrinterProps) do
-
-        exports['qb-target']:AddTargetModel(printer, {
-            options = printOptions,
-            distance = 2.0
-        })
+            if Config.UseOxLib then
+                exports.ox_target:addModel(printer, printOptions)
+            else
+                exports['qb-target']:AddTargetModel(printer, {
+                    options = printOptions,
+                    distance = 2.0
+                })
+            end
         end
     end
 end)
@@ -202,17 +208,20 @@ local printers = {}
 CreateThread(function()
     if Config.UsePrinterSpawns then
         for i,printer in pairs(Config.PrinterSpawns) do
+            local printerLocation = printer.coords
+            local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, false,  false, true)
+            SetEntityHeading(printer, printerLocation.w)
+            FreezeEntityPosition(printer, true)
+            SetEntityAsMissionEntity(printer)
 
-        local printerLocation = printer.coords
-        local printer = CreateObject(printer.prop, printerLocation.x, printerLocation.y, printerLocation.z, false,  false, true)
-        SetEntityHeading(printer, printerLocation.w)
-        FreezeEntityPosition(printer, true)
-        SetEntityAsMissionEntity(printer)
-
-        exports['qb-target']:AddTargetEntity(printer, {
-            options = printOptions,
-            distance = 2.0
-        })
+            if Config.UseOxLib then
+                exports.ox_target:addLocalEntity(printer, printOptions)
+            else
+                exports['qb-target']:AddTargetEntity(printer, {
+                    options = printOptions,
+                    distance = 2.0
+                })
+            end
         end
     end
 end)

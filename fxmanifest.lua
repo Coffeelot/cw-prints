@@ -1,6 +1,7 @@
 fx_version 'cerulean'
 
 game 'gta5'
+lua54 'yes'
 
 ui_page 'html/index.html'
 
@@ -22,5 +23,3 @@ server_scripts {
 files {
     'html/*',
 }
-
-dependency 'qb-target'
