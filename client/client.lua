@@ -10,7 +10,7 @@ local function notify(text, type)
             type = type,
         })
     else 
-        notify(text, type)
+        QBCore.Functions.Notify(text, type)
     end
 end
 
