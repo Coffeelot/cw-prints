@@ -1,4 +1,5 @@
 Config = {}
+Config.Debug = true
 
 Config.JobIsRequired = false
 Config.AllowedJobs = {

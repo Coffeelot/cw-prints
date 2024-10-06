@@ -1,6 +1,4 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local entryCoords = Config.Locations.shopEntranceCoords
-local exitCoords = Config.Locations.shopExitCoords
 
 local function createBusinessCard(source, data)
     local Player = QBCore.Functions.GetPlayer(source)
@@ -12,6 +10,16 @@ local function createBusinessCard(source, data)
     info.business = data.business
     info.url = data.url
     info.cardType = data.type
+
+    if Config.Debug then print(json.encode(
+        {
+            source = source,
+            name = info.name,
+            business = info.business,
+            url = info.url,
+            cardType = info.cardType,
+            item = item,
+        }, {indent=true})) end
 
 	if Config.Inv == 'qb' then
 		Player.Functions.RemoveMoney("cash", amount * Config.PrintCost[item])

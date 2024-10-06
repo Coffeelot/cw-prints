@@ -3,6 +3,53 @@ local shopLocation = "shopLoc"
 local shopExit = "shopExit"
 local interactable = "interacting"
 
+
+-- Global variables to track animation and prop status
+local isReadingBook = false
+local bookProp
+
+-- Function to start reading book animation with prop in left hand
+local function startReadingBook()
+    local playerPed = PlayerPedId()
+
+    -- Load the animation dictionary
+    RequestAnimDict("amb@world_human_clipboard@male@base")
+    while not HasAnimDictLoaded("amb@world_human_clipboard@male@base") do
+        Citizen.Wait(100)
+    end
+
+    -- Play the animation (only upper body - allows walking)
+    TaskPlayAnim(playerPed, "amb@world_human_clipboard@male@base", "base", 8.0, -8.0, -1, 49, 0, false, false, false)
+
+    -- Spawn the book prop
+    local bookModel = GetHashKey("prop_novel_01") -- Use an appropriate book model
+    RequestModel(bookModel)
+    while not HasModelLoaded(bookModel) do
+        Citizen.Wait(100)
+    end
+
+    -- Spawn and attach the book prop to the left hand with adjusted rotation
+    local playerCoords = GetEntityCoords(playerPed)
+    bookProp = CreateObject(bookModel, playerCoords.x, playerCoords.y, playerCoords.z, true, true, true)
+
+    -- Adjusted attachment to the left hand (bone index 18905) with proper rotation
+    AttachEntityToEntity(bookProp, playerPed, GetPedBoneIndex(playerPed, 18905), 0.16, 0.09, 0.06, 50.0, 270.0, 150.0, true, true, false, true, 1, true)
+end
+
+-- Function to stop the reading book animation and remove the prop
+local function stopReadingBook()
+    local playerPed = PlayerPedId()
+
+    -- Clear the animation
+    ClearPedTasks(playerPed)
+
+    -- If the book prop exists, delete it
+    if bookProp and DoesEntityExist(bookProp) then
+        DeleteObject(bookProp)
+        bookProp = nil
+    end
+end
+
 local function notify(text, type)
     if Config.UseOxLib then
         lib.notify({
@@ -49,7 +96,7 @@ end)
 
 local function setBookOpen(item, bool)
     SetNuiFocus(bool, bool)
-    TriggerEvent('animations:client:EmoteCommandStart', {"book"})
+    startReadingBook()
     SendNUIMessage({
         action = "cwPrintBook",
         toggle = bool,
@@ -58,8 +105,8 @@ local function setBookOpen(item, bool)
 end
 
 RegisterNUICallback("closebook-callback", function(item, cb)
+    stopReadingBook()
     SetNuiFocus(false, false)
-    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
 end)
 
 
@@ -70,15 +117,6 @@ RegisterNetEvent("cw-prints:client:openBook", function(item)
     end
     setBookOpen(item, true)
 end)
-
-local function hasValue(tbl, value)
-    for k, v in ipairs(tbl) do -- iterate table (for sequential tables only)
-        if v == value or (type(v) == "table" and hasValue(v, value)) then -- Compare value from the table directly with the value we are looking for, otherwise if the value is table, check its content for this value.
-            return true -- Found in this or nested table
-        end
-    end
-    return false -- Not found
-end
 
 local function isAllowed(type)
     if Config.JobIsRequired then
@@ -116,6 +154,22 @@ CreateThread(function()
     if boxData and boxData.created then
         return
     end
+    local options = {
+        {
+            type = "client",
+            event = "cw-prints:client:tpIn",
+            label = Lang:t("text.targetEnterBuilding"),
+            canInteract = function() return isAllowed('doors') end
+        },
+    }
+    if Config.UseOxLib then
+        print('coords', json.encode(coords, {indent=true}))
+
+        exports.ox_target:addBoxZone({
+            coords = coords,
+            options = options
+        })
+    else
         exports['qb-target']:AddBoxZone(shopLocation, coords, 1.5, 1.5, {
             name = shopLocation,
             heading = 0,
@@ -123,16 +177,10 @@ CreateThread(function()
             minZ = coords.z - 1.0,
             maxZ = coords.z + 1.0,
         }, {
-            options = {
-                {
-                    type = "client",
-                    event = "cw-prints:client:tpIn",
-                    label = Lang:t("text.targetEnterBuilding"),
-                    canInteract = function() return isAllowed('doors') end
-                },
-            },
+            options = options,
             distance = 2.0
         })
+    end
 end)
 
 CreateThread(function()
@@ -143,23 +191,31 @@ CreateThread(function()
         if boxData and boxData.created then
             return
         end
-        exports['qb-target']:AddBoxZone(shopExit, coords, 1.5, 1.5, {
-            name = shopExit,
-            heading = 0,
-            debugPoly = false,
-            minZ = coords.z - 1.0,
-            maxZ = coords.z + 1.0,
-        }, {
-            options = {
-                {
-                    type = "client",
-                    event = "cw-prints:client:tpOut",
-                    label = Lang:t("text.targetExitBuilding"),
-                    canInteract = function() return isAllowed('doors') end
-                },
+        local options = {
+            {
+                type = "client",
+                event = "cw-prints:client:tpOut",
+                label = Lang:t("text.targetExitBuilding"),
+                canInteract = function() return isAllowed('doors') end
             },
-            distance = 2.0
-        })
+        }
+        if Config.UseOxLib then
+            exports.ox_target:addBoxZone({
+                coords = coords,
+                options = options
+            })
+        else
+            exports['qb-target']:AddBoxZone(shopExit, coords, 1.5, 1.5, {
+                name = shopExit,
+                heading = 0,
+                debugPoly = false,
+                minZ = coords.z - 1.0,
+                maxZ = coords.z + 1.0,
+            }, {
+                options = options,
+                distance = 2.0
+            })
+        end
     end
 end)
 
@@ -186,16 +242,24 @@ CreateThread(function()
         if boxData and boxData.created then
             return
         end
-        exports['qb-target']:AddBoxZone(interactable, coords, 1.5, 1.5, {
-            name = interactable,
-            heading = 0,
-            debugPoly = false,
-            minZ = coords.z - 1.0,
-            maxZ = coords.z + 1.0,
-        }, {
-            options = printOptions,
-            distance = 2.0
-        })
+        if Config.UseOxLib then
+            exports.ox_target:addBoxZone({
+                coords = coords,
+                options = printOptions
+            })
+        else
+            exports['qb-target']:AddBoxZone(interactable, coords, 1.5, 1.5, {
+                name = interactable,
+                heading = 0,
+                debugPoly = false,
+                minZ = coords.z - 1.0,
+                maxZ = coords.z + 1.0,
+            }, {
+                options = printOptions,
+                distance = 2.0
+            })
+
+        end
     end
 end)
 

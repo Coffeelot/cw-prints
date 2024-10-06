@@ -6,6 +6,7 @@ lua54 'yes'
 ui_page 'html/index.html'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     '@qb-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
