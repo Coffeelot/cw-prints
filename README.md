@@ -24,6 +24,9 @@ In the future we plan to make it support any type of printable item (flyers etc)
 
 
 # Config 🔧
+
+> MAKE SURE TO REMOVE -main from the folder name or the script won't work!
+
 **JobIsRequired**: Set to *true* if you want to lock this behind a job. Default is*false*\
 **AllowedJob**: The job you want to be able to use it. Only needed if JobIsRequired is*true*\
 **Locations**: Vectors for the warps and the interaction point\
@@ -47,8 +50,6 @@ So, in a server file where you want to add a dynamic print you can do this:
 
     Player.Functions.AddItem('book', 1, false, info)
 ```
-
-
 
 ## Changing interaction shake
 If you don't want to use the current warp and interior then all you need to do is add this event to wherever you want to call it: `"cw-prints:client:openInteraction"` This will open the interaction menu for the script. 
